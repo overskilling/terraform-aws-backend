@@ -59,10 +59,6 @@ resource "aws_dynamodb_table" "tf_backend_state_lock_table" {
 resource "aws_s3_bucket" "tf_backend_bucket" {
   bucket = var.backend_bucket
   acl    = "private"
-  logging {
-    target_bucket = aws_s3_bucket.tf_backend_logs_bucket.id
-    target_prefix = "log/"
-  }
   tags = {
     Description        = "Terraform S3 Backend bucket which stores the terraform state for account ${data.aws_caller_identity.current.account_id}."
     ManagedByTerraform = "true"
@@ -86,6 +82,13 @@ resource "aws_s3_bucket_versioning" "tf_backend_bucket_versioning" {
   versioning_configuration {
     status = "Enabled"
   }
+}
+
+resource "aws_s3_bucket_logging" "tf_backend_bucket_logging" {
+  bucket = aws_s3_bucket.tf_backend_bucket.id
+
+  target_bucket = aws_s3_bucket.tf_backend_logs_bucket.id
+  target_prefix = "log/"
 }
 
 data "aws_iam_policy_document" "tf_backend_bucket_policy" {
