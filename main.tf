@@ -58,7 +58,6 @@ resource "aws_dynamodb_table" "tf_backend_state_lock_table" {
 
 resource "aws_s3_bucket" "tf_backend_bucket" {
   bucket = var.backend_bucket
-  acl    = "private"
   tags = {
     Description        = "Terraform S3 Backend bucket which stores the terraform state for account ${data.aws_caller_identity.current.account_id}."
     ManagedByTerraform = "true"
@@ -93,6 +92,10 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "tf_backend_bucket
   }
 }
 
+resource "aws_s3_bucket_acl" "tf_backend_bucket_acl" {
+  bucket = aws_s3_bucket.tf_backend_bucket.id
+  acl    = "private"
+}
 data "aws_iam_policy_document" "tf_backend_bucket_policy" {
   statement {
     sid    = "RequireEncryptedTransport"
