@@ -149,10 +149,6 @@ resource "aws_s3_bucket_policy" "tf_backend_bucket_policy" {
 
 resource "aws_s3_bucket" "tf_backend_logs_bucket" {
   bucket = "${var.backend_bucket}-logs"
-  acl    = "log-delivery-write"
-  versioning {
-    enabled = true
-  }
   tags = {
     Purpose            = "Logging bucket for ${var.backend_bucket}"
     ManagedByTerraform = "true"
@@ -163,3 +159,24 @@ resource "aws_s3_bucket" "tf_backend_logs_bucket" {
   }
 }
 
+resource "aws_s3_bucket_versioning" "tf_backend_logs_bucket_versioning" {
+  bucket = aws_s3_bucket.tf_backend_logs_bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_acl" "tf_backend_logs_bucket_acl" {
+  bucket = aws_s3_bucket.tf_backend_logs_bucket.id
+  acl    = "log-delivery-write"
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "tf_backend_logs_bucket_server_side_encryption" {
+  bucket = aws_s3_bucket.tf_backend_logs_bucket.id
+  rule {
+    apply_server_side_encryption_by_default {
+      kms_master_key_id = var.kms_key_id
+      sse_algorithm     = var.kms_key_id == "" ? "AES256" : "aws:kms"
+    }
+  }
+}
