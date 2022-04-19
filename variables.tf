@@ -37,3 +37,5 @@ variable "kms_key_id" {
   description = "The AWS KMS master key ID used for the SSE-KMS encryption on the tf state s3 bucket. If the kms_key_id is specified, the bucket default encryption key management method will be set to aws-kms. If the kms_key_id is not specified (the default), then the default encryption key management method will be set to aes-256 (also known as aws-s3 key management). The default aws/s3 AWS KMS master key is used if this element is absent (the default)."
 }
 
+# Additional tags to be merged with the existing tags in the module
+variable "tags" {}
