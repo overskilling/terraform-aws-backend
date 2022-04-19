@@ -59,9 +59,6 @@ resource "aws_dynamodb_table" "tf_backend_state_lock_table" {
 resource "aws_s3_bucket" "tf_backend_bucket" {
   bucket = var.backend_bucket
   acl    = "private"
-  versioning {
-    enabled = true
-  }
   logging {
     target_bucket = aws_s3_bucket.tf_backend_logs_bucket.id
     target_prefix = "log/"
@@ -81,6 +78,13 @@ resource "aws_s3_bucket" "tf_backend_bucket" {
   }
   lifecycle {
     prevent_destroy = true
+  }
+}
+
+resource "aws_s3_bucket_versioning" "tf_backend_bucket_versioning" {
+  bucket = aws_s3_bucket.tf_backend_bucket.id
+  versioning_configuration {
+    status = "Enabled"
   }
 }
 
