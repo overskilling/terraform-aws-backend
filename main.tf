@@ -64,14 +64,6 @@ resource "aws_s3_bucket" "tf_backend_bucket" {
     ManagedByTerraform = "true"
     TerraformModule    = "terraform-aws-backend"
   }
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        kms_master_key_id = var.kms_key_id
-        sse_algorithm     = var.kms_key_id == "" ? "AES256" : "aws:kms"
-      }
-    }
-  }
   lifecycle {
     prevent_destroy = true
   }
@@ -89,6 +81,16 @@ resource "aws_s3_bucket_logging" "tf_backend_bucket_logging" {
 
   target_bucket = aws_s3_bucket.tf_backend_logs_bucket.id
   target_prefix = "log/"
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "tf_backend_bucket_server_side_encryption" {
+  bucket = aws_s3_bucket.tf_backend_bucket.id
+  rule {
+    apply_server_side_encryption_by_default {
+      kms_master_key_id = var.kms_key_id
+      sse_algorithm     = var.kms_key_id == "" ? "AES256" : "aws:kms"
+    }
+  }
 }
 
 data "aws_iam_policy_document" "tf_backend_bucket_policy" {
