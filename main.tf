@@ -53,7 +53,7 @@ resource "aws_dynamodb_table" "tf_backend_state_lock_table" {
   )
 
   lifecycle {
-    prevent_destroy = var.prevent_destroy
+    prevent_destroy = true
   }
 }
 
@@ -66,7 +66,7 @@ resource "aws_s3_bucket" "tf_backend_bucket" {
     }
   )
   lifecycle {
-    prevent_destroy = var.prevent_destroy
+    prevent_destroy = true
   }
 }
 
@@ -167,7 +167,7 @@ resource "aws_s3_bucket" "tf_backend_logs_bucket" {
     }
   )
   lifecycle {
-    prevent_destroy = var.prevent_destroy
+    prevent_destroy = true
   }
 }
 
