@@ -39,6 +39,7 @@ variable "kms_key_id" {
 
 variable "prevent_destroy" {
   # Allow destruction of these resources with a two step process
+  type    = bool
   default = true
 }
 
