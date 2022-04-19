@@ -94,6 +94,13 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "tf_backend_bucket
   }
 }
 
+resource "aws_s3_bucket_public_access_block" "tf_backend_bucket_block_public_access" {
+  bucket = aws_s3_bucket.tf_backend_bucket.id
+
+  block_public_acls   = true
+  block_public_policy = true
+}
+
 resource "aws_s3_bucket_acl" "tf_backend_bucket_acl" {
   bucket = aws_s3_bucket.tf_backend_bucket.id
   acl    = "private"
@@ -182,4 +189,11 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "tf_backend_logs_b
       sse_algorithm     = var.kms_key_id == "" ? "AES256" : "aws:kms"
     }
   }
+}
+
+resource "aws_s3_bucket_public_access_block" "tf_backend_bucket_block_public_access" {
+  bucket = aws_s3_bucket.tf_backend_logs_bucket.id
+
+  block_public_acls   = true
+  block_public_policy = true
 }
