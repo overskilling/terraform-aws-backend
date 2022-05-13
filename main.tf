@@ -173,8 +173,9 @@ resource "aws_s3_bucket" "tf_backend_logs_bucket" {
 
 resource "aws_s3_bucket_versioning" "tf_backend_logs_bucket_versioning" {
   bucket = aws_s3_bucket.tf_backend_logs_bucket.id
+  # Logs bucket does not need versioning
   versioning_configuration {
-    status = "Enabled"
+    status = "Disabled"
   }
 }
 
