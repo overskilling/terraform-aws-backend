@@ -130,27 +130,29 @@ data "aws_iam_policy_document" "tf_backend_bucket_policy" {
     }
   }
 
-  statement {
-    sid    = "RequireEncryptedStorage"
-    effect = "Deny"
-    actions = [
-      "s3:PutObject",
-    ]
-    resources = [
-      "${aws_s3_bucket.tf_backend_bucket.arn}/*",
-    ]
-    condition {
-      test     = "StringNotEquals"
-      variable = "s3:x-amz-server-side-encryption"
-      values = [
-        var.kms_key_id == "" ? "AES256" : "aws:kms",
-      ]
-    }
-    principals {
-      type        = "*"
-      identifiers = ["*"]
-    }
-  }
+  # This section is causing the state to fail t be saved to S3 
+  # Is it a confusion between AES256 and SSE? 
+  # statement {
+  #   sid    = "RequireEncryptedStorage"
+  #   effect = "Deny"
+  #   actions = [
+  #     "s3:PutObject",
+  #   ]
+  #   resources = [
+  #     "${aws_s3_bucket.tf_backend_bucket.arn}/*",
+  #   ]
+  #   condition {
+  #     test     = "StringNotEquals"
+  #     variable = "s3:x-amz-server-side-encryption"
+  #     values = [
+  #       var.kms_key_id == "" ? "AES256" : "aws:kms",
+  #     ]
+  #   }
+  #   principals {
+  #     type        = "*"
+  #     identifiers = ["*"]
+  #   }
+  # }
 }
 
 resource "aws_s3_bucket_policy" "tf_backend_bucket_policy" {
